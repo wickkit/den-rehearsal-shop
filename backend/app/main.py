@@ -58,9 +58,7 @@ def add_line(cart_id: str, line: Line):
 def total(lines: dict[str, int], discount_pct: int = 0) -> Decimal:
     subtotal = sum(CATALOGUE[k]["price"] * q for k, q in lines.items())
     off = subtotal * Decimal(discount_pct) / 100
-    # Known bug (issue #1): the discount is truncated, not rounded, so
-    # 10% off 2.15 charges 1.94 instead of 1.93.
-    off = Decimal(int(off * 100)) / 100
+    off = off.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     return (subtotal - off).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
