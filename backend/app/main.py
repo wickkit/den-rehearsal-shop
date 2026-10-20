@@ -25,6 +25,12 @@ def health():
     return {"ok": True}
 
 
+@app.get("/orders/count")
+def order_count():
+    from app import orders
+    return {"orders": orders.count()}
+
+
 @app.get("/items")
 def items():
     return [{"id": k, "name": v["name"], "price": str(v["price"])} for k, v in CATALOGUE.items()]
