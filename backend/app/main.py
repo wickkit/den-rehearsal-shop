@@ -86,3 +86,9 @@ def order(order_id: int):
     if (o := orders.get(order_id)) is None:
         raise HTTPException(404, "no such order")
     return o
+
+
+@app.get("/carts/{cart_id}/orders")
+def cart_orders(cart_id: str):
+    from app import orders
+    return orders.for_cart(cart_id)

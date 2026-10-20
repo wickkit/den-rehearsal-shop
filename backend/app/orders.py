@@ -32,6 +32,12 @@ def get(order_id):
     return None if row is None else {"id": row[0], "cart": row[1], "total": str(row[2])}
 
 
+def for_cart(cart_id):
+    with connect() as conn:
+        rows = conn.execute("SELECT id, cart_id, total FROM orders WHERE cart_id = %s ORDER BY id", (cart_id,)).fetchall()
+    return [{"id": r[0], "cart": r[1], "total": str(r[2])} for r in rows]
+
+
 def count():
     with connect() as conn:
         return conn.execute("SELECT count(*) FROM orders").fetchone()[0]
