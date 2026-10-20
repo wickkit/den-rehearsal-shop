@@ -63,3 +63,20 @@ def cart_total(cart_id: str, discount: int = 0):
     if cart_id not in CARTS:
         raise HTTPException(404, "no such cart")
     return {"cart": cart_id, "total": str(total(CARTS[cart_id], discount))}
+
+
+@app.post("/carts/{cart_id}/checkout")
+def checkout(cart_id: str, discount: int = 0):
+    from app import orders
+    if cart_id not in CARTS:
+        raise HTTPException(404, "no such cart")
+    order_id = orders.place(cart_id, total(CARTS.pop(cart_id), discount))
+    return orders.get(order_id)
+
+
+@app.get("/orders/{order_id}")
+def order(order_id: int):
+    from app import orders
+    if (o := orders.get(order_id)) is None:
+        raise HTTPException(404, "no such order")
+    return o
