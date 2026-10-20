@@ -30,6 +30,14 @@ def items():
     return [{"id": k, "name": v["name"], "price": str(v["price"])} for k, v in CATALOGUE.items()]
 
 
+@app.get("/items/{item_id}")
+def item(item_id: str):
+    if item_id not in CATALOGUE:
+        raise HTTPException(404, "no such item")
+    v = CATALOGUE[item_id]
+    return {"id": item_id, "name": v["name"], "price": str(v["price"])}
+
+
 @app.post("/carts/{cart_id}/lines")
 def add_line(cart_id: str, line: Line):
     if line.item not in CATALOGUE:

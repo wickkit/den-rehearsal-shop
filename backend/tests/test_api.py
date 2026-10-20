@@ -20,6 +20,14 @@ def test_items_lists_catalogue():
     assert ids == ["tea", "mug", "spoon"]
 
 
+def test_get_one_item():
+    assert client.get("/items/mug").json() == {"id": "mug", "name": "Blue mug", "price": "9.99"}
+
+
+def test_get_unknown_item_is_404():
+    assert client.get("/items/kettle").status_code == 404
+
+
 def test_add_line_and_total():
     client.post("/carts/a/lines", json={"item": "tea", "qty": 2})
     client.post("/carts/a/lines", json={"item": "mug"})
