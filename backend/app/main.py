@@ -1,10 +1,15 @@
 """A tiny shop API: a catalogue, a cart, and a checkout total."""
+import tomllib
 from decimal import ROUND_HALF_UP, Decimal
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-app = FastAPI(title="Rehearsal Shop")
+# The version lives in pyproject.toml; read it so /health can't drift from it.
+VERSION = tomllib.loads((Path(__file__).parents[1] / "pyproject.toml").read_text())["project"]["version"]
+
+app = FastAPI(title="Rehearsal Shop", version=VERSION)
 
 CATALOGUE = {
     "tea": {"name": "Green tea", "price": Decimal("4.20")},
@@ -22,7 +27,7 @@ class Line(BaseModel):
 
 @app.get("/health")
 def health():
-    return {"ok": True}
+    return {"status": "ok", "version": VERSION}
 
 
 @app.get("/orders/count")
