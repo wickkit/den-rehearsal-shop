@@ -32,8 +32,14 @@ def order_count():
 
 
 @app.get("/items")
-def items():
-    return [{"id": k, "name": v["name"], "price": str(v["price"])} for k, v in CATALOGUE.items()]
+@app.get("/products")
+def items(sort: str | None = None):
+    rows = list(CATALOGUE.items())
+    if sort == "price":
+        rows.sort(key=lambda kv: kv[1]["price"])
+    elif sort is not None:
+        raise HTTPException(422, "sort must be 'price'")
+    return [{"id": k, "name": v["name"], "price": str(v["price"])} for k, v in rows]
 
 
 @app.get("/items/{item_id}")

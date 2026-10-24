@@ -20,6 +20,17 @@ def test_items_lists_catalogue():
     assert ids == ["tea", "mug", "spoon"]
 
 
+def test_products_sorted_by_price_cheapest_first():
+    r = client.get("/products?sort=price")
+    assert r.status_code == 200
+    assert [(p["id"], p["price"]) for p in r.json()] == [
+        ("spoon", "2.15"), ("tea", "4.20"), ("mug", "9.99")]
+
+
+def test_products_unknown_sort_is_422():
+    assert client.get("/products?sort=colour").status_code == 422
+
+
 def test_get_one_item():
     assert client.get("/items/mug").json() == {"id": "mug", "name": "Blue mug", "price": "9.99"}
 
